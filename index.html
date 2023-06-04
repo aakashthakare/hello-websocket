@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <style>
+            .messages {
+                width: 500px;
+                height: 400px;
+                border: 1px solid;
+                padding: 10px;
+                margin: 10px;
+            }
+            .input {
+                position: absolute;
+                width: 100%;
+                margin-left: 10px;
+            }
+            .message {
+                width: 100%;
+                float: left;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="messages" class="messages"></div>
+        <form id="input-form" class="input">
+            <label for="message">Type your message here:</label>
+            <input type="text" id="message" name="message" style="width: 310px;">
+            <input type="submit" value="Send" style="background: blue;color: white;">
+        </form>
+        <script>
+            const webSocket = new WebSocket('ws://localhost:443/');
+            webSocket.onmessage = (event) => {
+                console.log(event)
+                document.getElementById('messages').innerHTML += "<span class=\"message\">" + event.data + "<span/>";
+            };
+            function sendMessage(event) {
+                var inputMessage = document.getElementById('message')
+                webSocket.send(inputMessage.value)
+                inputMessage.value = ""
+                event.preventDefault();
+            }
+            document.getElementById('input-form').addEventListener('submit', sendMessage);
+        </script>
+    </body>
+</html>
